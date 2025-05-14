@@ -100,7 +100,7 @@ export function ProductDetail({ products }: ProductDetailProps) {
           {products.title}
         </h1>
         <p className="text-2xl font-extrabold md:text-3xl">
-          {formatPrice(pricePerUnit)},00
+          {formatPrice(pricePerUnit)}.00
         </p>
 
         <hr className="my-4 border-gray-300" />
