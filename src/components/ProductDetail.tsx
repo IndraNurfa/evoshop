@@ -39,7 +39,7 @@ export function ProductDetail({ products }: ProductDetailProps) {
   };
 
   const formatPrice = (num: number) => {
-    return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return "$ " + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
@@ -100,7 +100,7 @@ export function ProductDetail({ products }: ProductDetailProps) {
           {products.title}
         </h1>
         <p className="text-2xl font-extrabold md:text-3xl">
-          {formatPrice(pricePerUnit)}.00
+          {formatPrice(pricePerUnit)}
         </p>
 
         <hr className="my-4 border-gray-300" />
