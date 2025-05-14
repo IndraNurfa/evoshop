@@ -10,32 +10,33 @@ const api = axios.create({
   },
 });
 
-export const fetchProducts = async (): Promise<Products[]> => {
+export const fetchProducts = async (): Promise<Products[] | void> => {
   try {
-    const response = await api.get("/");
+    const response = await api.get("?offset=0&limit=10");
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
-    throw new Error("Failed to fetch products");
   }
 };
 
-export const fetchProductBySlug = async (slug: string): Promise<Products> => {
+export const fetchProductBySlug = async (
+  slug: string,
+): Promise<Products | void> => {
   try {
     const response = await api.get(`/slug/${slug}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
-    throw new Error("Failed to fetch products");
   }
 };
 
-export const fetchProductRelatedBySlug = async (slug: string): Promise<Products[]> => {
+export const fetchProductRelatedBySlug = async (
+  slug: string,
+): Promise<Products[] | void> => {
   try {
     const response = await api.get(`/slug/${slug}/related`);
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
-    throw new Error("Failed to fetch products");
   }
 };

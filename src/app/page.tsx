@@ -7,14 +7,15 @@ import { fetchProducts } from "./services/products";
 import { Loading } from "@/components/Loading";
 
 export default function Home() {
-  const [products, setProducts] = useState<Products[]>([]);
+  const [products, setProducts] = useState<Products[] | null>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const data = await fetchProducts();
-      setProducts(data);
+      console.log(data);
+      setProducts(data || []);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -32,7 +33,7 @@ export default function Home() {
       </h1>
       {loading && <Loading />}
       <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => (
+        {products?.map((product) => (
           <Link href={`/products/${product.slug}`} key={product.id}>
             <Card products={product} />
           </Link>

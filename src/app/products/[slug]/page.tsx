@@ -1,77 +1,56 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
 import {
   fetchProductBySlug,
   fetchProductRelatedBySlug,
 } from "@/app/services/products";
 import { Card } from "@/components/Card";
-import { Loading } from "@/components/Loading";
-import { Products } from "@/types";
+import { ProductDetail } from "@/components/ProductDetail";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { notFound } from "next/navigation";
 
-export default function ProductsPages() {
-  const param = useParams();
-  const slug = param.slug as string;
-  const [products, setProducts] = useState<Products | null>(null);
-  const [relatedProduct, setRelatedProduct] = useState<Products[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchProducts = async (slug: string) => {
-    try {
-      setLoading(true);
-      const data = await fetchProductBySlug(slug);
-      setProducts(data);
-      console.log("product", data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = await fetchProductBySlug(slug);
+  if (!product) {
+    return {
+      title: "Product Not Found",
+      description: "This product does not exist.",
+    };
+  }
+  return {
+    title: product.title,
+    description: product.description,
   };
+}
 
-  const fetchRelatedProducts = async (slug: string) => {
-    try {
-      const data = await fetchProductRelatedBySlug(slug);
-      setRelatedProduct(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+export default async function Page({ params }: { params: { slug: string } }) {
+  const { slug } = await params;
+  if (!slug) return notFound();
 
-  useEffect(() => {
-    if (!slug) return;
-    Promise.all([fetchProducts(slug), fetchRelatedProducts(slug)]);
-  }, [slug]);
+  const [product, relatedProducts] = await Promise.all([
+    fetchProductBySlug(slug),
+    fetchProductRelatedBySlug(slug),
+  ]);
 
-  console.log("related", relatedProduct);
+  if (!product) return notFound();
+
   return (
     <div className="container mx-auto">
-      {loading && <Loading />}
-      <h1>{products ? products.title : ""}</h1>
-      <h1>{products ? products.description : ""}</h1>
-      <h1>{products ? products.category.name : ""}</h1>
-      <h1>{products ? `$ ${products.price}.00` : ""}</h1>
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {products?.images.map((image, index) => (
-          <img
-            key={index}
-            src={image}
-            alt={`Product Image ${index + 1}`}
-            className="h-auto w-full"
-          />
+      <ProductDetail products={product} />
+
+      <hr className="my-4 border-gray-300" />
+      <h1 className="my-4 text-lg leading-tight font-extrabold md:text-xl">
+        Related Products
+      </h1>
+      <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {relatedProducts?.map((product) => (
+          <Link key={product.id} href={`/products/${product.slug}`}>
+            <Card products={product} />
+          </Link>
         ))}
-      </div>
-      <hr className="my-[20px] h-px border-2 bg-gray-200 dark:bg-gray-700" />
-      <div className="container">
-        <h1>Related Products</h1>
-        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {relatedProduct.map((product) => (
-            <Link key={product.id} href={`/products/${product.slug}`}>
-              <Card products={product} />
-            </Link>
-          ))}
-        </div>
       </div>
     </div>
   );
