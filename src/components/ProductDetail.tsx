@@ -4,6 +4,7 @@ import { Products } from "@/types";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import ModalImage from "react-modal-image";
 
 interface ProductDetailProps {
   products: Products;
@@ -47,12 +48,13 @@ export function ProductDetail({ products }: ProductDetailProps) {
       {/* Left column: Carousel */}
       <section className="flex w-full max-w-[400px] flex-col gap-3 select-none">
         <div className="group relative overflow-hidden rounded-xl">
-          <img
+          <ModalImage
+            small={products.images[currentIndex]}
+            medium={products.images[currentIndex]}
+            large={products.images[currentIndex]}
             alt={products.title}
-            className="h-auto w-full rounded-xl object-cover opacity-100 transition-opacity duration-500 ease-in-out group-hover:opacity-90"
-            height="400"
-            src={products.images[currentIndex]}
-            width="400"
+            hideDownload={true}
+            imageBackgroundColor="transparent"
           />
           <button
             aria-label="Previous slide"

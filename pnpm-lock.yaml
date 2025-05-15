@@ -29,6 +29,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
+      react-modal-image:
+        specifier: ^2.6.0
+        version: 2.6.0
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -45,6 +48,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.1.2(@types/react@19.1.2)
+      '@types/react-modal-image':
+        specifier: ^2.6.4
+        version: 2.6.4
       eslint:
         specifier: ^9
         version: 9.25.1(jiti@2.4.2)
@@ -457,6 +463,9 @@ packages:
     resolution: {integrity: sha512-XGJkWF41Qq305SKWEILa1O8vzhb3aOo3ogBlSmiqNko/WmRb6QIaweuZCXjKygVDXpzXb5wyxKTSOsmkuqj+Qw==}
     peerDependencies:
       '@types/react': ^19.0.0
+
+  '@types/react-modal-image@2.6.4':
+    resolution: {integrity: sha512-wL/ymT7/5cqk5xWOALHk+655QvD0CxuDFaxYorWUgMkltadIqCJJf+XVtPT8pcLhLDzTi2I5g/yCLr248+eobg==}
 
   '@types/react@19.1.2':
     resolution: {integrity: sha512-oxLPMytKchWGbnQM9O7D67uPa9paTNxO7jVoNMXgkkErULBPhPARCfkKL9ytcIJJRGjbsVwW4ugJzyFFvm/Tiw==}
@@ -1588,6 +1597,9 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  react-modal-image@2.6.0:
+    resolution: {integrity: sha512-NNc1xPKzFAn0VsNMdJ8NXt6c54aL/z0fcoYmw9qn4SBUONdGl+8LOQ0sTfo0wtdzcjLiby/ncloHcAL+UI+wIA==}
+
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
     engines: {node: '>=0.10.0'}
@@ -2161,6 +2173,10 @@ snapshots:
       undici-types: 6.19.8
 
   '@types/react-dom@19.1.2(@types/react@19.1.2)':
+    dependencies:
+      '@types/react': 19.1.2
+
+  '@types/react-modal-image@2.6.4':
     dependencies:
       '@types/react': 19.1.2
 
@@ -3406,6 +3422,8 @@ snapshots:
       scheduler: 0.26.0
 
   react-is@16.13.1: {}
+
+  react-modal-image@2.6.0: {}
 
   react@19.1.0: {}
 
