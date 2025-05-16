@@ -5,6 +5,7 @@ import { Card } from "../components/Card";
 import Link from "next/link";
 import { fetchProducts } from "./services/products";
 import { Loading } from "@/components/Loading";
+import { Navbar } from "@/components/Navbar";
 
 export default function Home() {
   const [products, setProducts] = useState<Products[] | null>([]);
@@ -28,8 +29,9 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="my-10 text-center text-4xl font-extrabold">
-        Platzi Fake Store
+      <Navbar />
+      <h1 className="mt-25 mb-5 text-center text-4xl font-extrabold">
+        RevoShop
       </h1>
       {loading && <Loading />}
       <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
