@@ -10,9 +10,9 @@ import { notFound } from "next/navigation";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const product = await fetchProductBySlug(slug);
   if (!product) {
     return {
@@ -27,7 +27,7 @@ export async function generateMetadata({
 }
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  const { slug } = await params;
+  const { slug } = params;
   if (!slug) return notFound();
 
   const [product, relatedProducts] = await Promise.all([

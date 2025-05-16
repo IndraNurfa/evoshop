@@ -21,22 +21,26 @@ export const fetchProducts = async (): Promise<Products[] | void> => {
 
 export const fetchProductBySlug = async (
   slug: string,
-): Promise<Products | void> => {
+): Promise<Products | null> => {
   try {
     const response = await api.get(`/slug/${slug}`);
+    if (!response.data) return null;
     return response.data;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching product by slug:", error);
+    return null;
   }
 };
 
 export const fetchProductRelatedBySlug = async (
   slug: string,
-): Promise<Products[] | void> => {
+): Promise<Products[] | null> => {
   try {
     const response = await api.get(`/slug/${slug}/related`);
+    if (!response.data) return null;
     return response.data;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching related products:", error);
+    return null;
   }
 };
