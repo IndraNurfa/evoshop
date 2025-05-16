@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
@@ -24,7 +25,11 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 z-50 mt-0 flex w-full max-w-full items-center justify-between border-b border-black bg-white p-2 dark:border-b-white dark:bg-black">
       <Link href={"/"}>
-        <img src={"vercel.svg"} className="ml-[20px] h-[50px] w-[50px]" />
+        <img
+          src="/vercel.svg"
+          alt="logo"
+          className="ml-[20px] h-[50px] w-[50px]"
+        />
       </Link>
       <input
         type="text"

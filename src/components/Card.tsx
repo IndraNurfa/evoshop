@@ -31,14 +31,6 @@ export function Card({ products }: CardProps) {
           <span className="mb-4 block text-xl font-bold text-black group-hover:underline sm:text-lg md:text-xl lg:text-2xl">
             {formatPrice(pricePerUnit)}
           </span>
-          {/* <div className="right-0 bottom-0 left-0 mt-3">
-            <button className="mb-2 block w-full rounded-full bg-green-300 px-4 py-2 text-black sm:py-1 md:py-2 lg:py-3">
-              Masukkan Keranjang
-            </button>
-            <button className="block w-full rounded-full bg-blue-300 px-4 py-2 text-black sm:py-1 md:py-2 lg:py-3">
-              Detail Produk
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

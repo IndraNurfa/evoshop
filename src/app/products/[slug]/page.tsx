@@ -3,6 +3,7 @@ import {
   fetchProductRelatedBySlug,
 } from "@/app/services/products";
 import { Card } from "@/components/Card";
+import { Navbar } from "@/components/Navbar";
 import { ProductDetail } from "@/components/ProductDetail";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -43,6 +44,8 @@ export default async function Page({
 
   return (
     <div className="container mx-auto">
+      <Navbar />
+
       <ProductDetail products={product} />
 
       <hr className="my-4 border-gray-300" />

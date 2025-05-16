@@ -44,7 +44,7 @@ export function ProductDetail({ products }: ProductDetailProps) {
   };
 
   return (
-    <main className="mx-auto flex max-w-7xl flex-col gap-6 p-4 md:p-6 lg:flex-row lg:p-8">
+    <main className="mx-auto mt-25 flex max-w-7xl flex-col gap-6 p-4 md:p-6 lg:flex-row lg:p-8">
       {/* Left column: Carousel */}
       <section className="flex w-full max-w-[400px] flex-col gap-3 select-none">
         <div className="group relative overflow-hidden rounded-xl">
@@ -169,8 +169,9 @@ export function ProductDetail({ products }: ProductDetailProps) {
             </span>
           </div>
           <button
-            className="mb-2 w-full rounded-md bg-green-700 py-2 font-semibold text-white"
+            className="mb-2 w-full rounded-md bg-green-700 py-2 font-semibold text-white hover:cursor-pointer hover:bg-green-800"
             type="button"
+            onClick={() => alert("Berhasil dimasukkan ke keranjang")}
           >
             + Keranjang
           </button>

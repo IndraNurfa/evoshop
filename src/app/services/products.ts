@@ -12,7 +12,7 @@ const api = axios.create({
 
 export const fetchProducts = async (): Promise<Products[] | void> => {
   try {
-    const response = await api.get("?offset=0&limit=10");
+    const response = await api.get("?offset=0&limit=24");
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
