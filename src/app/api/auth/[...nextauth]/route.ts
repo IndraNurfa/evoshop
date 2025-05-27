@@ -5,7 +5,7 @@ import { fetchUsers } from "@/app/services/users";
 
 const users = (await fetchUsers()) || [];
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -60,12 +60,11 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 60 * 5,
+    maxAge: 60 * 60 * 3,
   },
   secret: process.env.NEXTAUTH_SECRET || "your-secret-key",
   debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };
