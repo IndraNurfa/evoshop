@@ -1,41 +1,12 @@
 import { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import { fetchUsers } from "@/app/services/users";
 
-// In a real app, you would use a database
-// This is a simple in-memory store for demo purposes
-const users = [
-  {
-    id: "1",
-    name: "Admin User",
-    email: "admin@example.com",
-    password: bcrypt.hashSync("admin123", 10),
-    role: "admin",
-  },
-  {
-    id: "2",
-    name: "Regular User",
-    email: "user@example.com",
-    password: bcrypt.hashSync("user123", 10),
-    role: "user",
-  },
-];
+const users = (await fetchUsers()) || [];
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_API_SECRET!,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -52,17 +23,14 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password,
-        );
+        const isPasswordValid = credentials.password === user.password;
 
         if (!isPasswordValid) {
           return null;
         }
 
         return {
-          id: user.id,
+          id: String(user.id),
           name: user.name,
           email: user.email,
           role: user.role,
@@ -92,7 +60,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 60 * 5,
   },
   secret: process.env.NEXTAUTH_SECRET || "your-secret-key",
   debug: process.env.NODE_ENV === "development",

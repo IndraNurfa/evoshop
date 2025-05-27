@@ -6,6 +6,7 @@ import Link from "next/link";
 import { fetchProducts } from "./services/products";
 import { Loading } from "@/components/Loading";
 import { Navbar } from "@/components/Navbar";
+import { fetchUsers } from "./services/users";
 
 export default function Home() {
   const [products, setProducts] = useState<Products[] | null>([]);
@@ -15,9 +16,11 @@ export default function Home() {
     try {
       setLoading(true);
       const data = await fetchProducts();
-      console.log(data);
       setProducts(data || []);
       setLoading(false);
+
+      const user = await fetchUsers();
+      console.table(user);
     } catch (error) {
       console.log(error);
     }

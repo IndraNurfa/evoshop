@@ -20,3 +20,12 @@ export interface Category {
   creationAt: Date;
   updatedAt: Date;
 }
+
+export interface Users {
+  id: number;
+  email: string;
+  password: string;
+  name: string;
+  role: string;
+  avatar: string;
+}

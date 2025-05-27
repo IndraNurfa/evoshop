@@ -9,21 +9,18 @@ export default async function middleware(req: NextRequestWithAuth) {
     req.nextUrl.pathname.startsWith("/login") ||
     req.nextUrl.pathname.startsWith("/register");
 
-  // Root path - redirect based on auth status
+  // Root path - allow access if authenticated
   if (req.nextUrl.pathname === "/") {
-    if (isAuthenticated) {
-      const role = token.role as string;
-      const redirectUrl = role === "admin" ? "/admin" : "/home";
-      return NextResponse.redirect(new URL(redirectUrl, req.url));
-    } else {
+    if (!isAuthenticated) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+    return NextResponse.next();
   }
 
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && isAuthPage) {
     const role = token.role as string;
-    const redirectUrl = role === "admin" ? "/admin" : "/home";
+    const redirectUrl = role === "admin" ? "/admin" : "/";
     return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
 
@@ -35,9 +32,8 @@ export default async function middleware(req: NextRequestWithAuth) {
   // Handle admin routes
   if (isAuthenticated && req.nextUrl.pathname.startsWith("/admin")) {
     const role = token.role as string;
-
     if (role !== "admin") {
-      return NextResponse.redirect(new URL("/home", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
@@ -45,11 +41,5 @@ export default async function middleware(req: NextRequestWithAuth) {
 }
 
 export const config = {
-  matcher: [
-    "/login",
-    "/register",
-    "/home/:path*",
-    "/admin/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico|login).*)",
-  ],
+  matcher: ["/login", "/register", "/admin/:path*"],
 };
