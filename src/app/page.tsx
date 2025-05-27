@@ -28,19 +28,21 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4">
-      <Navbar />
-      <h1 className="mt-25 mb-5 text-center text-4xl font-extrabold">
-        RevoShop
-      </h1>
-      {loading && <Loading />}
-      <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products?.map((product) => (
-          <Link href={`/products/${product.slug}`} key={product.id}>
-            <Card products={product} />
-          </Link>
-        ))}
+    <>
+      <div className="container mx-auto px-4">
+        <Navbar />
+        <h1 className="mt-25 mb-5 text-center text-4xl font-extrabold">
+          RevoShop
+        </h1>
+        {loading && <Loading />}
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {products?.map((product) => (
+            <Link href={`/products/${product.slug}`} key={product.id}>
+              <Card products={product} />
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

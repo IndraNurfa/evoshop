@@ -43,22 +43,24 @@ export default async function Page({
   if (!product) return notFound();
 
   return (
-    <div className="container mx-auto">
-      <Navbar />
+    <>
+      <div className="container mx-auto">
+        <Navbar />
 
-      <ProductDetail products={product} />
+        <ProductDetail products={product} />
 
-      <hr className="my-4 border-gray-300" />
-      <h1 className="my-4 text-lg leading-tight font-extrabold md:text-xl">
-        Related Products
-      </h1>
-      <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {relatedProducts?.map((product) => (
-          <Link key={product.id} href={`/products/${product.slug}`}>
-            <Card products={product} />
-          </Link>
-        ))}
+        <hr className="my-4 border-gray-300" />
+        <h1 className="my-4 text-lg leading-tight font-extrabold md:text-xl">
+          Related Products
+        </h1>
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {relatedProducts?.map((product) => (
+            <Link key={product.id} href={`/products/${product.slug}`}>
+              <Card products={product} />
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
