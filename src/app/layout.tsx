@@ -4,7 +4,7 @@ import "./globals.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Providers } from "./providers";
+import { SessionProvider } from "@/providers/SessionProvider";
 config.autoAddCss = false;
 
 const geistSans = Geist({
@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );
