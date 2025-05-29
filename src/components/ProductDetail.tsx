@@ -1,9 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { Products } from "@/types";
+import { useCart } from "@/contexts/CartContext";
+import { CartItem, Products } from "@/types";
+import { formatPrice } from "@/utils/utils";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import ModalImage from "react-modal-image";
 
 interface ProductDetailProps {
@@ -11,8 +15,11 @@ interface ProductDetailProps {
 }
 
 export function ProductDetail({ products }: ProductDetailProps) {
+  const { addToCart } = useCart();
+  const { data: session } = useSession();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const pricePerUnit = products.price;
   const maxStock = 5;
   const imagesLength = products.images.length;
@@ -39,8 +46,33 @@ export function ProductDetail({ products }: ProductDetailProps) {
     }
   };
 
-  const formatPrice = (num: number) => {
-    return "$ " + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const handleAddToCart = () => {
+    // Return early if no session or user is admin
+    if (!session?.user) {
+      toast.error("Please login to add items to cart");
+      return;
+    }
+
+    if (session.user.role === "admin") {
+      toast.error("Admins cannot add items to cart");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const cartItem: CartItem = {
+        product: products,
+        quantity: quantity,
+      };
+
+      console.log("NavBar cartItem", cartItem);
+      addToCart(cartItem);
+      toast.success("Added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -130,7 +162,7 @@ export function ProductDetail({ products }: ProductDetailProps) {
             </h2>
             <div className="mb-2 flex items-center gap-3">
               <img
-                alt="Fragrance bottle and box in forest background thumbnail"
+                alt={products.title}
                 className="h-12 w-12 rounded"
                 height="48"
                 src={products.images[0]}
@@ -172,15 +204,21 @@ export function ProductDetail({ products }: ProductDetailProps) {
               </span>
             </div>
             <button
-              className="mb-2 w-full rounded-md bg-green-700 py-2 font-semibold text-white hover:cursor-pointer hover:bg-green-800"
+              className={`mb-2 w-full rounded-md bg-green-700 py-2 font-semibold text-white transition-colors ${
+                isLoading
+                  ? "cursor-not-allowed opacity-70"
+                  : "hover:cursor-pointer hover:bg-green-800"
+              }`}
               type="button"
-              onClick={() => alert("Berhasil dimasukkan ke keranjang")}
+              onClick={handleAddToCart}
+              disabled={isLoading}
             >
-              + Keranjang
+              {isLoading ? "Adding..." : "+ Add to Cart"}
             </button>
             <button
               className="w-full rounded-md border border-green-600 py-2 font-semibold text-green-600"
               type="button"
+              disabled
             >
               Beli Langsung
             </button>

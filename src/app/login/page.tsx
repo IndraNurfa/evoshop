@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { Loading } from "@/components/Loading";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -43,12 +44,8 @@ export default function LoginPage() {
         email,
         password,
       });
-      console.log("result", result);
 
-      if (result?.error) {
-        setError("Invalid email or password");
-        setIsLoading(false);
-      } else if (result?.ok) {
+      if (result?.ok) {
         // Successful login - redirect will be handled by middleware
         router.refresh();
         router.push("/");
@@ -152,5 +149,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+          <Loading />
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

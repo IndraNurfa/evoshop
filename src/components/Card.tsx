@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { formatPrice } from "@/utils/utils";
 import { Products } from "../types/index";
 
 interface CardProps {
@@ -6,11 +7,6 @@ interface CardProps {
 }
 
 export function Card({ products }: CardProps) {
-  const pricePerUnit = products.price;
-  const formatPrice = (num: number) => {
-    return "$ " + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   return (
     <>
       <div className="group hover:shadow-3xl min-h-[500px] overflow-hidden rounded-3xl bg-white shadow-2xl transition-all duration-300 hover:ring-2 hover:ring-lime-400 sm:min-h-[400px] md:min-h-[450px] lg:min-h-[500px]">
@@ -30,7 +26,7 @@ export function Card({ products }: CardProps) {
           </p>
           <div className="mt-4">
             <span className="mb-4 block text-xl font-bold text-black group-hover:underline sm:text-lg md:text-xl lg:text-2xl">
-              {formatPrice(pricePerUnit)}
+              {formatPrice(products.price)}
             </span>
           </div>
         </div>
