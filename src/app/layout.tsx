@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { SessionProvider } from "@/providers/SessionProvider";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { SessionProvider } from "@/providers/SessionProvider";
+import { Toaster } from "react-hot-toast";
+import { CartProvider } from "../contexts/CartContext";
 config.autoAddCss = false;
 
 const geistSans = Geist({
@@ -32,7 +34,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <CartProvider>{children}</CartProvider>
+        </SessionProvider>
+        <Toaster position="bottom-right" reverseOrder={true} />
       </body>
     </html>
   );

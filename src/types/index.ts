@@ -1,4 +1,4 @@
-export interface Products {
+export type Products = {
   id: number;
   title: string;
   slug: string;
@@ -10,7 +10,16 @@ export interface Products {
   updatedAt: Date;
 }
 
-export type ProductCard = Omit<Products, "creationAt" | "updatedAt">;
+// Use this for dummy products
+// export type Products = {
+//   id: string;
+//   title: string;
+//   slug: string;
+//   price: number;
+//   description: string;
+//   category_id: string;
+//   images: string;
+// };
 
 export interface Category {
   id: number;
@@ -20,6 +29,11 @@ export interface Category {
   creationAt: Date;
   updatedAt: Date;
 }
+
+export type CartItem = {
+  product: Products;
+  quantity: number;
+};
 
 export interface Users {
   id: number;
