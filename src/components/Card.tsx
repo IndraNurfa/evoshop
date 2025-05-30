@@ -9,7 +9,10 @@ interface CardProps {
 export function Card({ products }: CardProps) {
   return (
     <>
-      <div className="group hover:shadow-3xl min-h-[500px] overflow-hidden rounded-3xl bg-white shadow-2xl transition-all duration-300 hover:ring-2 hover:ring-lime-400 sm:min-h-[400px] md:min-h-[450px] lg:min-h-[500px]">
+      <div
+        className="group hover:shadow-3xl min-h-[500px] overflow-hidden rounded-3xl bg-white shadow-2xl transition-all duration-300 hover:ring-2 hover:ring-lime-400 sm:min-h-[400px] md:min-h-[450px] lg:min-h-[500px]"
+        data-testid="product-list"
+      >
         <div className="relative" style={{ height: "66.666%" }}>
           <img
             src={products.images[0]}

@@ -3,6 +3,7 @@
 
 import { Products } from "@/types";
 import { FC } from "react";
+import { formatPrice } from "../../utils/utils";
 
 interface ProductTableProps {
   products: Products[];
@@ -51,7 +52,7 @@ const ProductTable: FC<ProductTableProps> = ({ products, onEdit }) => {
                   </div>
                 </td>
                 <td className="w-32 px-4 py-4 text-center font-semibold">
-                  ${product.price.toFixed(2)}
+                  {formatPrice(product.price)}
                 </td>
                 <td className="w-48 px-4 py-4 text-center">
                   {product.category.name}

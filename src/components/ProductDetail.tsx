@@ -169,33 +169,29 @@ export function ProductDetail({ products }: ProductDetailProps) {
                 width="48"
               />
             </div>
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mt-6 flex items-center gap-3">
               <button
-                aria-label="Decrease quantity"
-                className="flex h-8 w-8 items-center justify-center rounded border border-gray-300 text-lg font-semibold text-gray-600 select-none"
                 onClick={handleDecreaseQuantity}
-                type="button"
+                disabled={quantity <= 1}
+                aria-label="Decrease quantity"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#0f172a] text-[#0f172a] transition-colors duration-300 hover:bg-[#0f172a] hover:text-white dark:border-[#94a3b8] dark:text-[#94a3b8] dark:hover:bg-[#94a3b8] dark:hover:text-[#0f172a]"
               >
                 -
               </button>
-              <input
-                className="w-10 rounded border border-gray-300 text-center text-sm font-semibold"
-                readOnly
-                type="text"
-                value={quantity}
-              />
+              <span
+                data-testid="quantity-display"
+                className="w-8 text-center text-[#0f172a] dark:text-[#94a3b8]"
+              >
+                {quantity}
+              </span>
               <button
-                aria-label="Increase quantity"
-                className="flex h-8 w-8 items-center justify-center rounded border border-green-600 text-lg font-semibold text-green-600 select-none"
                 onClick={handleIncreaseQuantity}
-                type="button"
+                disabled={quantity >= maxStock}
+                aria-label="Increase quantity"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#0f172a] text-[#0f172a] transition-colors duration-300 hover:bg-[#0f172a] hover:text-white dark:border-[#94a3b8] dark:text-[#94a3b8] dark:hover:bg-[#94a3b8] dark:hover:text-[#0f172a]"
               >
                 +
               </button>
-              <span className="text-xs md:text-sm">
-                Stok:
-                <span className="font-bold">{maxStock}</span>
-              </span>
             </div>
             <div className="mb-3 flex justify-between text-xs text-gray-600 md:text-sm">
               <span>Subtotal</span>
