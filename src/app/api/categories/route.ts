@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-const API_URL = "https://api.escuelajs.co/api/v1/products";
+const API_URL = "https://api.escuelajs.co/api/v1/categories";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -18,20 +18,6 @@ export async function GET() {
     console.error("Error fetching products:", error);
     return NextResponse.json(
       { error: "Failed to fetch products" },
-      { status: 500 },
-    );
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const res = await request.json();
-    const response = await api.post("", res);
-    return NextResponse.json({ data: response.data }, { status: 201 });
-  } catch (error) {
-    console.error("Error update product:", error);
-    return NextResponse.json(
-      { error: "Failed to update product" },
       { status: 500 },
     );
   }
