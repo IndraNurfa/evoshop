@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RevoShop",
-  description: "RevoShop simple e-commerce website",
+  title: "EvoShop",
+  description: "EvoShop simple e-commerce website",
 };
 
 export default function RootLayout({

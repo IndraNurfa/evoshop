@@ -1,12 +1,11 @@
 "use client";
 
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
-import { Loading } from "@/components/Loading";
+import Link from "next/link";
 
-function LoginContent() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -44,8 +43,12 @@ function LoginContent() {
         email,
         password,
       });
+      console.log("result", result);
 
-      if (result?.ok) {
+      if (result?.error) {
+        setError("Invalid email or password");
+        setIsLoading(false);
+      } else if (result?.ok) {
         // Successful login - redirect will be handled by middleware
         router.refresh();
         router.push("/");
@@ -58,95 +61,93 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg dark:bg-gray-800">
-        <h2 className="mb-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
-          Sign in to your account
-        </h2>
+    <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg dark:bg-gray-800">
+      <h2 className="mb-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+        Sign in to your account
+      </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="rounded-lg border border-red-500 bg-red-100 p-4 dark:bg-red-900/50">
-              <p className="text-sm text-red-600 dark:text-red-200">{error}</p>
-            </div>
-          )}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="rounded-lg border border-red-500 bg-red-100 p-4 dark:bg-red-900/50">
+            <p className="text-sm text-red-600 dark:text-red-200">{error}</p>
+          </div>
+        )}
 
-          {success && (
-            <div className="rounded-lg border border-green-500 bg-green-100 p-4 dark:bg-green-900/50">
-              <p className="text-sm text-green-600 dark:text-green-200">
-                {success}
-              </p>
-            </div>
-          )}
+        {success && (
+          <div className="rounded-lg border border-green-500 bg-green-100 p-4 dark:bg-green-900/50">
+            <p className="text-sm text-green-600 dark:text-green-200">
+              {success}
+            </p>
+          </div>
+        )}
 
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                placeholder="Enter your password"
-              />
-            </div>
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+              placeholder="Enter your email"
+            />
           </div>
 
           <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors ${
-                isLoading
-                  ? "cursor-not-allowed bg-indigo-600 opacity-70"
-                  : "bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-indigo-500 dark:hover:bg-indigo-600"
-              }`}
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              {isLoading ? "Signing in..." : "Sign in"}
-            </button>
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+              placeholder="Enter your password"
+            />
           </div>
-        </form>
-
-        <div className="mt-6 text-center text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
-            Don&apos;t have an account?{" "}
-          </span>
-          <Link
-            href="/register"
-            className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-          >
-            Register now
-          </Link>
         </div>
+
+        <div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors ${
+              isLoading
+                ? "cursor-not-allowed bg-indigo-600 opacity-70"
+                : "bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-indigo-500 dark:hover:bg-indigo-600"
+            }`}
+          >
+            {isLoading ? "Signing in..." : "Sign in"}
+          </button>
+        </div>
+      </form>
+
+      <div className="mt-6 text-center text-sm">
+        <span className="text-gray-600 dark:text-gray-400">
+          Don&apos;t have an account?{" "}
+        </span>
+        <Link
+          href="/register"
+          className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+        >
+          Register now
+        </Link>
       </div>
     </div>
   );
@@ -154,14 +155,18 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
-          <Loading />
-        </div>
-      }
-    >
-      <LoginContent />
-    </Suspense>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <Suspense
+        fallback={
+          <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg dark:bg-gray-800">
+            <h2 className="mb-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+              Loading...
+            </h2>
+          </div>
+        }
+      >
+        <LoginForm />
+      </Suspense>
+    </div>
   );
 }
