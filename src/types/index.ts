@@ -8,18 +8,7 @@ export type Products = {
   images: string[];
   creationAt: Date;
   updatedAt: Date;
-}
-
-// Use this for dummy products
-// export type Products = {
-//   id: string;
-//   title: string;
-//   slug: string;
-//   price: number;
-//   description: string;
-//   category_id: string;
-//   images: string;
-// };
+};
 
 export interface Category {
   id: number;
