@@ -1,12 +1,12 @@
 "use client";
 
-import { Category, Products } from "@/types";
+import { Category, NewProduct } from "@/types";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface AddProductModalProps {
   categories: Category[];
-  onAdd: (product: Products) => void;
+  onAdd: (product: NewProduct) => void;
   onClose: () => void;
 }
 
@@ -79,23 +79,13 @@ export default function AddProductModal({
         categories.find((c) => c.id === Number(formData.categoryId)) ||
         categories[0];
 
-      // Create the slug from title
-      const slug = formData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric chars with dash
-        .replace(/(^-|-$)/g, ""); // Remove leading/trailing dashes
-
       // Create the new product object
-      const newProduct: Products = {
-        id: 0, // Will be assigned by the server
+      const newProduct: NewProduct = {
         title: formData.title,
-        slug: slug,
         price: Number(formData.price),
         description: formData.description,
-        category: selectedCategory,
+        categoryId: selectedCategory.id,
         images: formData.images,
-        creationAt: new Date(),
-        updatedAt: new Date(),
       };
 
       onAdd(newProduct);
@@ -232,7 +222,7 @@ export default function AddProductModal({
               required
               type="url"
               placeholder="https://example.com/image.jpg"
-              value={formData.images[0]}
+              value={formData.images[0] || "https://placehold.co/600x400"}
               onChange={(e) => {
                 setFormData({ ...formData, images: [e.target.value] });
                 if (errors.images) setErrors({ ...errors, images: undefined });

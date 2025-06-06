@@ -94,7 +94,7 @@ export function Navbar() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <input
             type="text"
-            placeholder="search bar"
+            placeholder="Search feature coming soon! Thank you for your patience."
             className="w-[300px] rounded-lg border border-black px-3 py-2 text-center text-base md:w-[350px] lg:w-[380px] 2xl:w-[700px] dark:border-white"
             disabled
           />
@@ -207,6 +207,20 @@ export function Navbar() {
                     </div>
                   )}
 
+                  {session?.user.role === "admin" && (
+                    <li>
+                      <Link
+                        href={"/admin"}
+                        className="block px-4 py-2 hover:bg-gray-500 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        <FontAwesomeIcon
+                          icon={faAddressCard}
+                          className="mr-2"
+                        />
+                        Admin Dashboard
+                      </Link>
+                    </li>
+                  )}
                   <li>
                     <Link
                       href={"/about"}
