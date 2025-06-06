@@ -44,14 +44,15 @@ function LoginForm() {
         password,
       });
       console.log("result", result);
-
       if (result?.error) {
         setError("Invalid email or password");
         setIsLoading(false);
       } else if (result?.ok) {
-        // Successful login - redirect will be handled by middleware
+        // Let the middleware handle the redirection
         router.refresh();
-        router.push("/");
+        const callbackUrl = searchParams.get("callbackUrl");
+        // Don't push to any URL, let middleware handle it
+        window.location.href = callbackUrl || window.location.href;
       }
     } catch (error) {
       console.error("Login error:", error);
