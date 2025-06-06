@@ -8,11 +8,14 @@ export default async function middleware(req: NextRequestWithAuth) {
   const isAuthPage =
     req.nextUrl.pathname.startsWith("/login") ||
     req.nextUrl.pathname.startsWith("/register");
+  // Check if there's a specific page to return to after login
+  const callbackUrl = req.nextUrl.searchParams.get("callbackUrl");
 
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && isAuthPage) {
     const role = token.role as string;
-    const redirectUrl = role === "admin" ? "/admin" : "/";
+    // If admin, always redirect to admin page unless there's a specific callback
+    const redirectUrl = callbackUrl || (role === "admin" ? "/admin" : "/");
     return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
 
@@ -20,12 +23,19 @@ export default async function middleware(req: NextRequestWithAuth) {
   if (!isAuthenticated && !isAuthPage) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
-
   // Handle admin routes
   if (isAuthenticated && req.nextUrl.pathname.startsWith("/admin")) {
     const role = token.role as string;
     if (role !== "admin") {
       return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  // Prevent admin from accessing checkout
+  if (isAuthenticated && req.nextUrl.pathname === "/checkout") {
+    const role = token.role as string;
+    if (role === "admin") {
+      return NextResponse.redirect(new URL("/admin", req.url));
     }
   }
 
