@@ -3,28 +3,50 @@ import { NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequestWithAuth) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
   const isAuthenticated = !!token;
   const isAuthPage =
     req.nextUrl.pathname.startsWith("/login") ||
     req.nextUrl.pathname.startsWith("/register");
 
-  // Redirect authenticated users away from auth pages
-  if (isAuthenticated && isAuthPage) {
-    const role = token.role as string;
-    const redirectUrl = role === "admin" ? "/admin" : "/";
-    return NextResponse.redirect(new URL(redirectUrl, req.url));
+  // Allow /admin/api routes to pass through
+  if (req.nextUrl.pathname.startsWith("/admin/api")) {
+    return NextResponse.next();
   }
 
-  // Redirect unauthenticated users to login
-  if (!isAuthenticated && !isAuthPage) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  // For auth pages (login, register)
+  if (isAuthPage) {
+    if (isAuthenticated) {
+      const role = token.role as string;
+      const redirectUrl = role === "admin" ? "/admin" : "/";
+      return NextResponse.redirect(new URL(redirectUrl, req.url));
+    }
+    return NextResponse.next();
   }
 
-  // Handle admin routes
-  if (isAuthenticated && req.nextUrl.pathname.startsWith("/admin")) {
+  // For protected routes
+  if (!isAuthenticated) {
+    const searchParams = new URLSearchParams([
+      ["callbackUrl", req.nextUrl.pathname],
+    ]);
+    return NextResponse.redirect(new URL(`/login?${searchParams}`, req.url));
+  }
+  // Special handling for admin routes
+  if (req.nextUrl.pathname.startsWith("/admin")) {
     const role = token.role as string;
     if (role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  // Prevent admin from accessing checkout
+  if (req.nextUrl.pathname === "/checkout") {
+    const role = token.role as string;
+    if (role === "admin") {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
