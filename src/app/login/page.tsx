@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,21 +37,38 @@ function LoginForm() {
     setSuccess("");
 
     try {
+      const callbackUrl = searchParams.get("callbackUrl");
+      console.log("Starting login attempt...");
+
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
+        callbackUrl: callbackUrl || undefined,
       });
-      console.log("result", result);
-      if (result?.error) {
+
+      console.log("Login result:", result);
+
+      if (!result) {
+        console.error("No result from signIn");
+        setError("Authentication failed. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (result.error) {
+        console.error("Login error:", result.error);
         setError("Invalid email or password");
         setIsLoading(false);
-      } else if (result?.ok) {
-        // Let the middleware handle the redirection
-        router.refresh();
-        const callbackUrl = searchParams.get("callbackUrl");
-        // Don't push to any URL, let middleware handle it
-        window.location.href = callbackUrl || window.location.href;
+        return;
+      }
+      if (result.ok) {
+        console.log("Login successful, refreshing session...");
+        // Wait for session to be updated
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Force a hard refresh to ensure token is set
+        // This will trigger the middleware to handle the redirection based on role
+        window.location.href = window.location.href;
       }
     } catch (error) {
       console.error("Login error:", error);

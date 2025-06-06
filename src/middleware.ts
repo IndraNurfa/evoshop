@@ -23,6 +23,7 @@ export default async function middleware(req: NextRequestWithAuth) {
   if (!isAuthenticated && !isAuthPage) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
+
   // Handle admin routes
   if (isAuthenticated && req.nextUrl.pathname.startsWith("/admin")) {
     const role = token.role as string;
