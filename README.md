@@ -1,11 +1,9 @@
 # EvoShop
+## 📖 Overview
 A modern e-commerce application built with Next.js, featuring product management, shopping cart functionality, and user authentication. The project uses a modern tech stack and implements best practices for testing and styling.
 
 ## [🌐 Live Demo]
 [Click Here](https://milestone-3-indranurfa.vercel.app/)
-
-## 📖 Overview
-
 
 ## ✨ Features
 
