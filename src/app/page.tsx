@@ -45,7 +45,7 @@ export default function Home() {
         ) : (
           <>
             <h1 className="mt-25 mb-5 text-center text-4xl font-extrabold">
-              RevoShop
+              EvoShop
             </h1>
             {error && <p className="text-center text-red-500">{error}</p>}
             <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
