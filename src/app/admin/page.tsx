@@ -1,7 +1,15 @@
 import AdminDashboard from "@/components/admin/AdminDashboard";
+import type { PaginationInfo } from "@/types";
 
 // This is the number of seconds between revalidations
 export const revalidate = 60; // Revalidate every 60 seconds
+
+const defaultPagination: PaginationInfo = {
+  currentPage: 1,
+  totalPages: 1,
+  totalItems: 0,
+  itemsPerPage: 10,
+};
 
 async function fetchProducts(page = 1) {
   try {
@@ -17,17 +25,20 @@ async function fetchProducts(page = 1) {
       console.error("Failed to fetch products:", res.status, res.statusText);
       return {
         products: [],
-        pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
+        pagination: defaultPagination,
       };
     }
 
-    const { data, pagination } = await res.json();
-    return { products: data || [], pagination };
+    const json = await res.json();
+    return {
+      products: json.data || [],
+      pagination: json.pagination || defaultPagination,
+    };
   } catch (error) {
     console.error("Error fetching products:", error);
     return {
       products: [],
-      pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
+      pagination: defaultPagination,
     };
   }
 }
@@ -47,8 +58,8 @@ async function fetchCategories() {
       return [];
     }
 
-    const { data } = await res.json();
-    return data || [];
+    const json = await res.json();
+    return json.data || [];
   } catch (error) {
     console.error("Error fetching categories:", error);
     return [];
