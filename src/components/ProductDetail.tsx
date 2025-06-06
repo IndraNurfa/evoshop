@@ -21,7 +21,7 @@ export function ProductDetail({ products }: ProductDetailProps) {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const pricePerUnit = products.price;
-  const maxStock = 5;
+  const maxStock = 999;
   const imagesLength = products.images.length;
 
   const updateMainImage = (index: number) => {
@@ -168,32 +168,45 @@ export function ProductDetail({ products }: ProductDetailProps) {
                 src={products.images[0]}
                 width="48"
               />
-            </div>
-            <div className="mt-6 flex items-center gap-3">
-              <button
-                onClick={handleDecreaseQuantity}
-                disabled={quantity <= 1}
-                aria-label="Decrease quantity"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#0f172a] text-[#0f172a] transition-colors duration-300 hover:bg-[#0f172a] hover:text-white dark:border-[#94a3b8] dark:text-[#94a3b8] dark:hover:bg-[#94a3b8] dark:hover:text-[#0f172a]"
-              >
-                -
-              </button>
-              <span
-                data-testid="quantity-display"
-                className="w-8 text-center text-[#0f172a] dark:text-[#94a3b8]"
-              >
-                {quantity}
+            </div>{" "}
+            <div className="mt-6 flex items-center">
+              <div className="flex items-center rounded-full border border-[#0f172a] dark:border-[#94a3b8]">
+                <button
+                  onClick={handleDecreaseQuantity}
+                  disabled={quantity <= 1}
+                  aria-label="Decrease quantity"
+                  className="flex h-8 w-8 items-center justify-center text-[#0f172a] transition-colors duration-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 dark:text-[#94a3b8]"
+                >
+                  -
+                </button>
+                <input
+                  value={quantity}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 1 && value <= maxStock) {
+                      setQuantity(value);
+                    }
+                  }}
+                  data-testid="quantity-display"
+                  className="w-12 border-x border-[#0f172a] text-center text-[#0f172a] focus:outline-none dark:border-[#94a3b8] dark:text-[#94a3b8]"
+                  min="1"
+                  max={maxStock}
+                />
+                <button
+                  onClick={handleIncreaseQuantity}
+                  disabled={quantity >= maxStock}
+                  aria-label="Increase quantity"
+                  className="flex h-8 w-8 items-center justify-center text-[#0f172a] transition-colors duration-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 dark:text-[#94a3b8]"
+                >
+                  +
+                </button>
+              </div>
+              <span className="ml-auto text-xs md:text-sm">
+                Stok:
+                <span className="font-bold">{maxStock}</span>
               </span>
-              <button
-                onClick={handleIncreaseQuantity}
-                disabled={quantity >= maxStock}
-                aria-label="Increase quantity"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#0f172a] text-[#0f172a] transition-colors duration-300 hover:bg-[#0f172a] hover:text-white dark:border-[#94a3b8] dark:text-[#94a3b8] dark:hover:bg-[#94a3b8] dark:hover:text-[#0f172a]"
-              >
-                +
-              </button>
             </div>
-            <div className="mb-3 flex justify-between text-xs text-gray-600 md:text-sm">
+            <div className="my-3 flex justify-between border-b border-gray-200 text-xs text-gray-600 md:text-sm">
               <span>Subtotal</span>
               <span className="font-extrabold">
                 {formatPrice(quantity * pricePerUnit)}

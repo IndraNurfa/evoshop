@@ -9,14 +9,6 @@ export default async function middleware(req: NextRequestWithAuth) {
     req.nextUrl.pathname.startsWith("/login") ||
     req.nextUrl.pathname.startsWith("/register");
 
-  // Root path - allow access if authenticated
-  if (req.nextUrl.pathname === "/") {
-    if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-    return NextResponse.next();
-  }
-
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && isAuthPage) {
     const role = token.role as string;
