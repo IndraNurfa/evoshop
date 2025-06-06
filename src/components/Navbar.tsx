@@ -209,16 +209,22 @@ export function Navbar() {
 
                   {session?.user.role === "admin" && (
                     <li>
-                      <Link
-                        href={"/admin"}
+                      <a
+                        href="/admin"
                         className="block px-4 py-2 hover:bg-gray-500 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={(e) => {
+                          // Prevent default navigation
+                          e.preventDefault();
+                          // Force a full page navigation to /admin
+                          window.location.href = "/admin";
+                        }}
                       >
                         <FontAwesomeIcon
                           icon={faAddressCard}
                           className="mr-2"
                         />
                         Admin Dashboard
-                      </Link>
+                      </a>
                     </li>
                   )}
                   <li>
