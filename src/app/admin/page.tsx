@@ -4,29 +4,55 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 export const revalidate = 60; // Revalidate every 60 seconds
 
 async function fetchProducts(page = 1) {
-  const res = await fetch(`http://localhost:3000/api/products?page=${page}`, {
-    next: { revalidate },
-  });
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.NEXTAUTH_URL ||
+      "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/products?page=${page}`, {
+      next: { revalidate },
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
+    if (!res.ok) {
+      console.error("Failed to fetch products:", res.status, res.statusText);
+      return {
+        products: [],
+        pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
+      };
+    }
+
+    const { data, pagination } = await res.json();
+    return { products: data || [], pagination };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return {
+      products: [],
+      pagination: { currentPage: 1, totalPages: 1, totalItems: 0 },
+    };
   }
-
-  const { data, pagination } = await res.json();
-  return { products: data || [], pagination };
 }
 
 async function fetchCategories() {
-  const res = await fetch("http://localhost:3000/api/categories", {
-    next: { revalidate },
-  });
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.NEXTAUTH_URL ||
+      "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/categories`, {
+      next: { revalidate },
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch categories");
+    if (!res.ok) {
+      console.error("Failed to fetch categories:", res.status, res.statusText);
+      return [];
+    }
+
+    const { data } = await res.json();
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
   }
-
-  const { data } = await res.json();
-  return data || [];
 }
 
 export default async function AdminPage() {
