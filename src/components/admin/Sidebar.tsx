@@ -8,9 +8,10 @@ import {
   faSearch,
   faThLarge,
   faUsers,
-  faUserTie
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export default function Sidebar() {
   return (
@@ -23,7 +24,9 @@ export default function Sidebar() {
             aria-label="Collapse sidebar"
             className="ml-auto text-[#94a3b8] hover:text-white"
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <Link href={"/"}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Link>
           </button>
         </div>
 

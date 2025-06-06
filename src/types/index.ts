@@ -10,6 +10,14 @@ export type Products = {
   updatedAt: Date;
 };
 
+export type NewProduct = {
+  title: string;
+  price: number;
+  description: string;
+  categoryId: number;
+  images: string[];
+};
+
 export interface Category {
   id: number;
   name: string;
@@ -31,4 +39,16 @@ export interface Users {
   name: string;
   role: string;
   avatar: string;
+}
+
+export interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: PaginationInfo;
 }

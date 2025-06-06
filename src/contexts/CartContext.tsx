@@ -33,84 +33,70 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
   const [items, setItems] = useState<CartItem[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
 
-  // Load cart items on mount
+  // Load cart items on mount and when session changes
   useEffect(() => {
     if (session?.user) {
-      try {
-        const storedItems = localStorage.getItem(`cart_${session.user.id}`);
-        if (storedItems) {
+      const storedItems = localStorage.getItem(`cart_${session.user.id}`);
+      if (storedItems) {
+        try {
           const parsedItems = JSON.parse(storedItems);
           setItems(parsedItems);
-          setTotalItems(parsedItems.length);
+        } catch (error) {
+          console.error("Error parsing stored cart items:", error);
         }
-      } catch (error) {
-        console.error("Error loading cart items:", error);
       }
+    } else {
+      setItems([]); // Clear cart when no session
     }
   }, [session]);
 
-  // Update localStorage when items change
+  // Save to localStorage whenever items change
   useEffect(() => {
     if (session?.user) {
-      try {
-        localStorage.setItem(`cart_${session.user.id}`, JSON.stringify(items));
-        setTotalItems(items.length);
-      } catch (error) {
-        console.error("Error saving cart items:", error);
-      }
+      localStorage.setItem(`cart_${session.user.id}`, JSON.stringify(items));
     }
   }, [items, session]);
 
-  const addToCart = (item: CartItem) => {
-    console.log("Adding item to cart:", item);
+  const addToCart = (newItem: CartItem) => {
     setItems((currentItems) => {
-      const existingItemIndex = currentItems.find(
-        (i) => i.product.id === item.product.id,
+      const existingItem = currentItems.find(
+        (item) => item.product.id === newItem.product.id,
       );
 
-      if (existingItemIndex) {
-        // Update existing item
+      if (existingItem) {
         return currentItems.map((item) =>
-          item.product.id === item.product.id
-            ? { ...item, quantity: item.quantity + 1 }
+          item.product.id === newItem.product.id
+            ? { ...item, quantity: item.quantity + newItem.quantity }
             : item,
         );
       }
 
-      // Add new item
-      return [...currentItems, item];
+      return [...currentItems, newItem];
     });
   };
 
   const increaseQuantity = (productId: number) => {
-    setItems((currentItems) => {
-      return currentItems.map((item) => {
-        if (item.product.id === productId) {
-          // Increase quantity
-          return { ...item, quantity: item.quantity + 1 };
-        }
-        return item;
-      });
-    });
+    setItems((currentItems) =>
+      currentItems.map((item) =>
+        item.product.id === productId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item,
+      ),
+    );
   };
 
   const decreaseQuantity = (productId: number) => {
-    setItems((currentItems) => {
-      return currentItems.map((item) => {
-        if (item.product.id === productId) {
-          // If quantity is 1, the item will be removed by removeFromCart
-          if (item.quantity <= 1) {
-            removeFromCart(productId);
-            return item;
+    setItems((currentItems) =>
+      currentItems
+        .map((item) => {
+          if (item.product.id === productId) {
+            return { ...item, quantity: Math.max(0, item.quantity - 1) };
           }
-          // Decrease quantity
-          return { ...item, quantity: item.quantity - 1 };
-        }
-        return item;
-      });
-    });
+          return item;
+        })
+        .filter((item) => item.quantity > 0),
+    );
   };
 
   const removeFromCart = (productId: number) => {
@@ -124,7 +110,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       value={{
         items,
         addToCart,
-        totalItems,
+        totalItems: items.length,
         increaseQuantity,
         decreaseQuantity,
         removeFromCart,

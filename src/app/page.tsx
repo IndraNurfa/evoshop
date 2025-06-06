@@ -5,6 +5,7 @@ import { Products } from "@/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card } from "../components/Card";
+import { fetchProducts } from "./services/products";
 
 export default function Home() {
   const [products, setProducts] = useState<Products[] | null>([]);
@@ -16,13 +17,11 @@ export default function Home() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("/api/products");
-      console.log("🚀 ~ fetchData ~ response:", response);
-      if (!response.ok) {
+      const response = await fetchProducts();
+      if (!response || response.length === 0) {
         throw new Error("Failed to fetch products");
       }
-      const { data } = await response.json();
-      setProducts(data || []);
+      setProducts(response || []);
     } catch (error) {
       console.error("Error:", error);
       setError(error instanceof Error ? error.message : "An error occurred");
@@ -51,7 +50,11 @@ export default function Home() {
             {error && <p className="text-center text-red-500">{error}</p>}
             <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {products?.map((product) => (
-                <Link href={`/products/${product.slug}`} key={product.id}>
+                <Link
+                  href={`/products/${product.slug}`}
+                  key={product.id}
+                  onClick={() => setLoading(true)}
+                >
                   <Card products={product} />
                 </Link>
               ))}

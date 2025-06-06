@@ -1,6 +1,6 @@
 "use client";
 
-import { Category, Products } from "@/types";
+import { Category, NewProduct, Products, PaginationInfo } from "@/types";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import AddProductModal from "./AddProductModal";
@@ -11,16 +11,37 @@ import Sidebar from "./Sidebar";
 interface AdminDashboardProps {
   initialProducts: Products[];
   categories: Category[];
+  initialPagination: PaginationInfo;
 }
 
 export default function AdminDashboard({
   initialProducts,
   categories,
+  initialPagination,
 }: AdminDashboardProps) {
   const [products, setProducts] = useState<Products[]>(initialProducts);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Products | null>(null);
+  const [pagination, setPagination] =
+    useState<PaginationInfo>(initialPagination);
+  const [loading, setLoading] = useState(false);
+
+  const fetchPageData = async (page: number) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/products?page=${page}`);
+      if (!response.ok) throw new Error("Failed to fetch products");
+      const { data, pagination: newPagination } = await response.json();
+      setProducts(data);
+      setPagination(newPagination);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      toast.error("Failed to fetch products");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEdit = (product: Products) => {
     setEditingProduct(product);
@@ -87,7 +108,7 @@ export default function AdminDashboard({
     }
   };
 
-  const handleAdd = async (newProduct: Products) => {
+  const handleAdd = async (newProduct: NewProduct) => {
     try {
       // Server update first for new items to get the real ID
       const response = await fetch("/api/products", {
@@ -99,7 +120,7 @@ export default function AdminDashboard({
           title: newProduct.title,
           price: newProduct.price,
           description: newProduct.description,
-          categoryId: newProduct.category.id,
+          categoryId: newProduct.categoryId,
           images: newProduct.images,
         }),
       });
@@ -140,10 +161,16 @@ export default function AdminDashboard({
           </button>
         </section>
 
-        <ProductTable products={products} onEdit={handleEdit} />
+        <ProductTable
+          products={products}
+          onEdit={handleEdit}
+          pagination={pagination}
+          loading={loading}
+          onPageChange={fetchPageData}
+        />
       </main>
 
-      {/* Add Modal */}
+      {/* Modals */}
       {isAddModalOpen && (
         <AddProductModal
           onAdd={handleAdd}

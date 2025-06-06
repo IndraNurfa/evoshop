@@ -1,7 +1,8 @@
 import axios from "axios";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = "https://api.escuelajs.co/api/v1/products";
+const ITEMS_PER_PAGE = 10;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -10,10 +11,32 @@ const api = axios.create({
   },
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const products = await api.get("");
-    return NextResponse.json({ data: products.data }, { status: 200 });
+    const searchParams = request.nextUrl.searchParams;
+    const page = parseInt(searchParams.get("page") ?? "1");
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+
+    const [productsResponse, totalResponse] = await Promise.all([
+      api.get(`?offset=${offset}&limit=${ITEMS_PER_PAGE}`),
+      api.get(""),
+    ]);
+
+    const totalItems = totalResponse.data.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+    return NextResponse.json(
+      {
+        data: productsResponse.data,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalItems,
+          itemsPerPage: ITEMS_PER_PAGE,
+        },
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
